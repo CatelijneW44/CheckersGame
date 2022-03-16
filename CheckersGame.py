@@ -18,7 +18,7 @@ class checkers(object):
   [" ", "1", " ", "1", " ", "1", " ", "1"],
   ["1", " ", "1", " ", "1", " ", "1", " "],
   [" ", " ", " ", " ", " ", " ", " ", " "],
-  [" ", " ", "1", " ", " ", " ", " ", " "],
+  [" ", " ", " ", " ", " ", " ", " ", " "],
   [" ", "2", " ", "2", " ", "2", " ", "2"],
   ["2", " ", "2", " ", "2", " ", "2", " "],
   [" ", "2", " ", "2", " ", "2", " ", "2"]]
@@ -77,23 +77,22 @@ class checkers(object):
         self.validMove(move, piece, player)
         return True
     else:
-      print "\n I N V A L I D  M O V E"
+      #print "\n I N V A L I D  M O V E"
       return False
   
   def jumpFunc(self, move, piece, player):
-    print "I HAVE ARRIVED"
     moveR, moveC = self.getMoves(move)
     pieceR, pieceC = self.getPieces(piece)
     if player == "2":
       self.pointsWhite += 1
     else:
       self.pointsBlack += 1
+    self.board[-((moveR+(pieceR)) // 2)][((moveC) + (pieceC))//2] = " "
     self.validMove(move, piece, player)
-    print moveR, pieceR + 1
-    print moveC, pieceC + 1
+    
+    #print -((moveR+(moveC+1)) // 2), ((pieceR) + (pieceC))//2
   
   def jump(self, move, piece, player):
-    print "IM HERE"
     
     moveR, moveC = self.getMoves(move)
     pieceR, pieceC = self.getPieces(piece)
@@ -103,14 +102,14 @@ class checkers(object):
         self.jumpFunc(move, piece, player)
         return True
       else:
-        print "\n I N V A L I D  J U M P"
+        #print "\n I N V A L I D  J U M P"
         return False
     elif player == "1":
       if self.board[-pieceR+1][pieceC-1] == "2" and self.board[-pieceR+2][pieceC-2] == " " or self.board[-pieceR+1][pieceC+1] == "2" and self.board[-pieceR+2][pieceC+2] == " ":
         self.jumpFunc(move, piece, player)
         return True
       else:
-        print "\n I N V A L I D  J U M P"
+        #print "\n I N V A L I D  J U M P"
         return False
 
 def gameIntro():
@@ -143,7 +142,6 @@ def rounds():
       player = "1"
   
     if board.userMove(move, piece, player) == False:
-      print "LFKJDLSKFJ"
       board.jump(move, piece, player)
     else:
       value = board.userMove(move, piece, player)
