@@ -136,7 +136,8 @@ def rounds():
       player = "2"
     else:
       player = "1"
-    
+      print "skjdfl;kdjfl;kdsjf;lkjsda"
+  
     if board.userMove(move, piece, player) == False:
       board.jump(move, piece, player)
     else:
