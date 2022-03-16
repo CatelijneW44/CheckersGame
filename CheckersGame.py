@@ -18,7 +18,7 @@ class checkers(object):
   [" ", "1", " ", "1", " ", "1", " ", "1"],
   ["1", " ", "1", " ", "1", " ", "1", " "],
   [" ", " ", " ", " ", " ", " ", " ", " "],
-  [" ", " ", " ", " ", " ", " ", " ", " "],
+  [" ", " ", "1", " ", " ", " ", " ", " "],
   [" ", "2", " ", "2", " ", "2", " ", "2"],
   ["2", " ", "2", " ", "2", " ", "2", " "],
   [" ", "2", " ", "2", " ", "2", " ", "2"]]
@@ -75,17 +75,22 @@ class checkers(object):
     if -pieceR+self.negPos(player) == -moveR and pieceC-1 == moveC or -pieceR+self.negPos(player) == -moveR and pieceC+1 == moveC:
       if self.movePossible(move, piece, player) == True:
         self.validMove(move, piece, player)
-      else:
-        print "\n I N V A L I D  M O V E"
-        return False
+        return True
+    else:
+      print "\n I N V A L I D  M O V E"
+      return False
   
   def jumpFunc(self, move, piece, player):
+    print "I HAVE ARRIVED"
+    moveR, moveC = self.getMoves(move)
+    pieceR, pieceC = self.getPieces(piece)
     if player == "2":
       self.pointsWhite += 1
-      
     else:
       self.pointsBlack += 1
-      
+    self.validMove(move, piece, player)
+    print moveR, pieceR + 1
+    print moveC, pieceC + 1
   
   def jump(self, move, piece, player):
     print "IM HERE"
@@ -136,13 +141,13 @@ def rounds():
       player = "2"
     else:
       player = "1"
-      print "skjdfl;kdjfl;kdsjf;lkjsda"
   
     if board.userMove(move, piece, player) == False:
+      print "LFKJDLSKFJ"
       board.jump(move, piece, player)
     else:
       value = board.userMove(move, piece, player)
-      while value == "False":
+      while value == False:
         board.userMove(move, piece, player)
   
     numberRound += 1
