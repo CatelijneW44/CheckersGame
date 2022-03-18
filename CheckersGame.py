@@ -9,6 +9,7 @@ class style: #https://stackoverflow.com/questions/24834876/how-can-i-make-text-b
 print style.BOLD + 'This is my text string.' + style.END
 
 #USE LATER
+#RETRY WORK
 
 class checkers(object):
   
@@ -40,14 +41,13 @@ class checkers(object):
     print " ", " ", "  1", space, "2", space, "3", space, "4", space, "5", space, "6", space, "7", space, "8"
       
   def getMoves(self, move):
-    return int(move[0]), int(move[1]) - 1
+    return int(move[0]), int(move[1])-1
   
   def getPieces(self, piece):
-    return int(piece[0]), int(piece[1]) - 1
+    return int(piece[0]), int(piece[1])-1
   
   def movePossible(self, move, piece, player):
-    moveR = int(move[0])
-    moveC = int(move[1])
+    moveR, moveC = self.getMoves(move)
     
     if self.board[-moveR][moveC] == " ":
       return True
@@ -89,8 +89,6 @@ class checkers(object):
       self.pointsBlack += 1
     self.board[-((moveR+(pieceR)) // 2)][((moveC) + (pieceC))//2] = " "
     self.validMove(move, piece, player)
-    
-    #print -((moveR+(moveC+1)) // 2), ((pieceR) + (pieceC))//2
   
   def jump(self, move, piece, player):
     
@@ -102,14 +100,14 @@ class checkers(object):
         self.jumpFunc(move, piece, player)
         return True
       else:
-        #print "\n I N V A L I D  J U M P"
+        print "\n I N V A L I D  J U M P"
         return False
     elif player == "1":
       if self.board[-pieceR+1][pieceC-1] == "2" and self.board[-pieceR+2][pieceC-2] == " " or self.board[-pieceR+1][pieceC+1] == "2" and self.board[-pieceR+2][pieceC+2] == " ":
         self.jumpFunc(move, piece, player)
         return True
       else:
-        #print "\n I N V A L I D  J U M P"
+        print "\n I N V A L I D  J U M P"
         return False
 
 def gameIntro():
@@ -138,8 +136,10 @@ def rounds():
     
     if numberRound%2 != 0:
       player = "2"
+      print "Player White move"
     else:
       player = "1"
+      print "Player White move"
   
     if board.userMove(move, piece, player) == False:
       board.jump(move, piece, player)
@@ -154,21 +154,6 @@ def rounds():
 rounds()
 
 """
-
-board = checkers()
-
-board.display()
-
-gameIntro()
-
-print "Black GO"
-
-#player = input("player white or black?")
-piece = input("Which piece would you like to move? ex: 32 (row 3, column 2)")
-move = input("Which row and column would you like to move to? ex: 41 (row 4, column 1) ")
-
-
-board.userMove(move, piece, "1")
 
 32
 41
