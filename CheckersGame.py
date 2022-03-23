@@ -5,8 +5,6 @@
 class style: #https://stackoverflow.com/questions/24834876/how-can-i-make-text-bold-in-python
    BOLD = '\033[1m'
    END = '\033[0m'
-  
-print style.BOLD + 'This is my text string.' + style.END
 
 #USE LATER
 #RETRY WORK
@@ -16,10 +14,10 @@ class checkers(object):
   def __init__(self):
     boardList = [
   ["1", " ", "1", " ", "1", " ", "1", " "],
-  [" ", "1", " ", "1", " ", "1", " ", "1"],
+  [" ", "1", " ", " ", " ", "1", " ", "1"],
   ["1", " ", "1", " ", "1", " ", "1", " "],
   [" ", " ", " ", " ", " ", " ", " ", " "],
-  [" ", " ", " ", " ", " ", " ", " ", " "],
+  [" ", " ", " ", " ", "1", " ", " ", " "],
   [" ", "2", " ", "2", " ", "2", " ", "2"],
   ["2", " ", "2", " ", "2", " ", "2", " "],
   [" ", "2", " ", "2", " ", "2", " ", "2"]]
@@ -29,8 +27,8 @@ class checkers(object):
     self.pointsBlack = 0
     
   def display(self):
-    print "\n White Score: ", self.pointsWhite
-    print "\n Black Score: ", self.pointsBlack
+    print style.BOLD + "\n White Score: " + style.END, self.pointsWhite
+    print style.BOLD + "\n Black Score: " + style.END, self.pointsBlack
     c = 8
     row = ""
     space = "  "
@@ -45,6 +43,12 @@ class checkers(object):
   
   def getPieces(self, piece):
     return int(piece[0]), int(piece[1])-1
+    
+  def getPlayer(self, player):
+    if player == "1":
+      return "Black", "White"
+    elif player == "2":
+      return "White", "Black"
   
   def movePossible(self, move, piece, player):
     moveR, moveC = self.getMoves(move)
@@ -98,23 +102,33 @@ class checkers(object):
     if player == "2":
       if self.board[-pieceR-1][pieceC-1] == "1" and self.board[-pieceR-2][pieceC-2] == " " or self.board[-pieceR-1][pieceC+1] == "1" and self.board[-pieceR-2][pieceC+2] == " ":
         self.jumpFunc(move, piece, player)
-        return True
+        
       else:
         print "\n I N V A L I D  J U M P"
         return False
+        
     elif player == "1":
       if self.board[-pieceR+1][pieceC-1] == "2" and self.board[-pieceR+2][pieceC-2] == " " or self.board[-pieceR+1][pieceC+1] == "2" and self.board[-pieceR+2][pieceC+2] == " ":
         self.jumpFunc(move, piece, player)
-        return True
+        
       else:
         print "\n I N V A L I D  J U M P"
         return False
 
+    again = input("Would you like to jump again? - only applicable if possible [y/n]")
+    
+    if again == "y":
+      piece, move = questions()
+      value = self.jump(move, piece, player)
+    elif again == "n":
+      player, opponent = self.getPlayer(player)
+      print "\n PLAYER", opponent.upper(), "MOVE \n"
+
 def gameIntro():
-  print "\n C H E C K E R S   G A M E \n"
+  print style.BOLD +"\n C H E C K E R S   G A M E \n"
   print "Black = 1, White = 2"
   
-  print "\n Remember, white begins! \n"
+  print "\n Remember, white begins! \n" + style.END
  
 def questions():
   piece = input("Which piece would you like to move? ex: 32 (row 3, column 2)")
@@ -136,13 +150,13 @@ def rounds():
     
     if numberRound%2 != 0:
       player = "2"
-      print "Player White move"
     else:
       player = "1"
-      print "Player White move"
   
     if board.userMove(move, piece, player) == False:
-      board.jump(move, piece, player)
+      value = board.jump(move, piece, player)
+      while value == False:
+        board.jump(move, piece, player)
     else:
       value = board.userMove(move, piece, player)
       while value == False:
@@ -154,14 +168,10 @@ def rounds():
 rounds()
 
 """
-
 32
 41
-
 63
 52
-
 41
 63
-
 """
