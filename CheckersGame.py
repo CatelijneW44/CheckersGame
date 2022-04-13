@@ -13,11 +13,11 @@ class checkers(object):
   
   def __init__(self):
     boardList = [
-  ["1", " ", "1", " ", "1", " ", "1", " "],
-  [" ", "1", " ", " ", " ", "1", " ", "1"],
+  ["1", " ", "1", " ", "♔", " ", "1", " "],
+  [" ", "1", " ", " ", " ", " ", " ", "1"],
   ["1", " ", "1", " ", "1", " ", "1", " "],
   [" ", " ", " ", " ", " ", " ", " ", " "],
-  [" ", " ", " ", " ", "1", " ", " ", " "],
+  [" ", " ", " ", " ", " ", " ", " ", " "],
   [" ", "2", " ", "2", " ", "2", " ", "2"],
   ["2", " ", "2", " ", "2", " ", "2", " "],
   [" ", "2", " ", "2", " ", "2", " ", "2"]]
@@ -76,12 +76,13 @@ class checkers(object):
     moveR, moveC = self.getMoves(move)
     pieceR, pieceC = self.getPieces(piece)
     
+    
     if -pieceR+self.negPos(player) == -moveR and pieceC-1 == moveC or -pieceR+self.negPos(player) == -moveR and pieceC+1 == moveC:
       if self.movePossible(move, piece, player) == True:
         self.validMove(move, piece, player)
         return True
     else:
-      #print "\n I N V A L I D  M O V E"
+      print "\n I N V A L I D  M O V E"
       return False
   
   def jumpFunc(self, move, piece, player):
@@ -102,20 +103,18 @@ class checkers(object):
     if player == "2":
       if self.board[-pieceR-1][pieceC-1] == "1" and self.board[-pieceR-2][pieceC-2] == " " or self.board[-pieceR-1][pieceC+1] == "1" and self.board[-pieceR-2][pieceC+2] == " ":
         self.jumpFunc(move, piece, player)
-        
       else:
-        print "\n I N V A L I D  J U M P"
+        #print "\n I N V A L I D  J U M P"
         return False
         
     elif player == "1":
       if self.board[-pieceR+1][pieceC-1] == "2" and self.board[-pieceR+2][pieceC-2] == " " or self.board[-pieceR+1][pieceC+1] == "2" and self.board[-pieceR+2][pieceC+2] == " ":
         self.jumpFunc(move, piece, player)
-        
       else:
-        print "\n I N V A L I D  J U M P"
+        #print "\n I N V A L I D  J U M P"
         return False
 
-    again = input("Would you like to jump again? - only applicable if possible [y/n]")
+    again = input(style.BOLD +"Would you like to jump again? - only applicable if possible [y/n]"+style.END)
     
     if again == "y":
       piece, move = questions()
@@ -123,7 +122,35 @@ class checkers(object):
     elif again == "n":
       player, opponent = self.getPlayer(player)
       print "\n PLAYER", opponent.upper(), "MOVE \n"
-
+  
+  def king(self, move, piece):
+    if self.userMove(move, piece, "1") == True:
+      self.userMove(move, piece, "1")
+    elif self.userMove(move, piece, "2") == True:
+      self.userMove(move, piece, "2")
+  
+  def convertKing(self, move, player):
+    moveR = int(move[0])
+    moveC = int(move[1])-1
+    
+    if player == "2" and moveR == 8:
+      self.board[-moveR][moveC] = "♔"
+      self.display()
+    elif player == "1" and moveR == 1:
+      self.board[-moveR][moveC] = "♚"
+      self.display()
+    
+  def isKing(self, move, piece, player):
+    moveR, moveC = self.getMoves(move)
+    
+    if player == "2" and self.board[-moveR][moveC] == "♔":
+      #self.king(move, piece)
+      return True
+    elif player == "1" and self.board[-moveR][moveC] == "♚":
+      #self.king(move, piece)
+      return True
+      
+    
 def gameIntro():
   print style.BOLD +"\n C H E C K E R S   G A M E \n"
   print "Black = 1, White = 2"
@@ -153,25 +180,26 @@ def rounds():
     else:
       player = "1"
   
+  
     if board.userMove(move, piece, player) == False:
       value = board.jump(move, piece, player)
       while value == False:
         board.jump(move, piece, player)
+        
+    elif board.isKing(move, piece, player) == True:
+      board.king(move, piece)
+    
     else:
       value = board.userMove(move, piece, player)
       while value == False:
         board.userMove(move, piece, player)
-  
+    
+    if move[0] == "8" or move == "0":
+      board.convertKing(move, player)
+    
+    
+    
     numberRound += 1
   
 # M A I N 
 rounds()
-
-"""
-32
-41
-63
-52
-41
-63
-"""
