@@ -14,11 +14,11 @@ class checkers(object):
   def __init__(self):
     # Initialize board (list), points for both players
     boardList = [
-  ["1", " ", "1", " ", "♔", " ", "1", " "],
-  [" ", "1", " ", " ", " ", " ", " ", "1"],
+  ["1", " ", "1", " ", " ", " ", "1", " "],
+  [" ", "1", " ", "2", " ", " ", " ", "1"],
   ["1", " ", "1", " ", "1", " ", "1", " "],
   [" ", " ", " ", " ", " ", " ", " ", " "],
-  [" ", " ", " ", " ", " ", " ", " ", " "],
+  [" ", " ", " ", " ", "1", " ", " ", " "],
   [" ", "2", " ", "2", " ", "2", " ", "2"],
   ["2", " ", "2", " ", "2", " ", "2", " "],
   [" ", "2", " ", "2", " ", "2", " ", "2"]]
@@ -103,6 +103,7 @@ class checkers(object):
         
     else:
       print "\n I N V A L I D  M O V E"
+      print player
       return False
   
   def jumpFunc(self, move, piece, player):
@@ -205,29 +206,26 @@ def rounds():
 
   gameIntro()
   
-  while puttingOff > 0: #while any move can be made
+  while board.pointsWhite < 12 or board.pointsBlack < 12: #while any move can be made
     piece, move = questions()
     
     if numberRound%2 != 0:
       player = "2"
     else:
       player = "1"
-  
-  
-    if board.userMove(move, piece, player) == False:
-      value = board.jump(move, piece, player)
+      
+      
+    value = board.userMove(move, piece, player)
+    valueJump = board.jump(move, piece, player)
+    if value == False and valueJump == False:
       while value == False:
-        board.jump(move, piece, player)
+        piece, move = questions()
+        value = board.userMove(move, piece, player)
         
     elif board.isKing(move, piece, player) == True:
       pass
-    
-    else:
-      value = board.userMove(move, piece, player)
-      while value == False:
-        board.userMove(move, piece, player)
-    
-    if move[0] == "8" or move == "0":
+      
+    if move[0] == "8" or move[0] == "1":
       board.convertKing(move, player)
     
     
