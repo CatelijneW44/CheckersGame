@@ -23,7 +23,7 @@ class checkers(object):
     
     self.board = boardList
     self.pointsWhite = 7
-    self.pointsBlack = 9
+    self.pointsBlack = 8
     
   def display(self):
     #displays board in readable and logical way
@@ -257,7 +257,7 @@ def rounds():
     player = "white"
   
   print "\n"  
-  print "\n", style.BOLD + player.upper(), "HAS WON THE MATCH" + + style.END
+  print "\n", style.BOLD + player.upper(), "HAS WON THE MATCH" + style.END, "\n"
 # M A I N 
 rounds()
 
@@ -268,16 +268,23 @@ rounds()
 # 
 # 54 36 jump
 # 
-# 52 74 jump
+# 63 85 jump
 # 
-# 56 45
+# 83 74
 # 
-# 74 85
+# 85 63
 # 
-# 72 63
+# 36 25
 # 
-# 85 67
+# 12 21
 # 
+# 25 14
+# 
+# 21 32
+# 
+# 14 23
+# 
+# 63 52
 # 
 
-
+# 
