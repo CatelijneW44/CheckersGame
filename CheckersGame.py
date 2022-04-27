@@ -3,6 +3,7 @@
 ### USE lATER
 
 class style: #https://stackoverflow.com/questions/24834876/how-can-i-make-text-bold-in-python
+  #Using this bc _____
    BOLD = '\033[1m'
    END = '\033[0m'
 
@@ -11,18 +12,18 @@ class checkers(object):
   def __init__(self):
     # Initialize board (list), points for both players
     boardList = [
-  ["1", " ", "1", " ", "1", " ", "1", " "],
-  [" ", "1", " ", "1", " ", "1", " ", "1"],
-  ["1", " ", "1", " ", "1", " ", "1", " "],
+  [" ", " ", "1", " ", " ", " ", " ", " "],
+  [" ", " ", " ", "1", " ", "1", " ", " "],
+  [" ", " ", "2", " ", " ", " ", " ", " "],
+  [" ", " ", " ", "2", " ", " ", " ", " "],
+  [" ", " ", " ", " ", "2", " ", " ", " "],
   [" ", " ", " ", " ", " ", " ", " ", " "],
   [" ", " ", " ", " ", " ", " ", " ", " "],
-  [" ", "2", " ", "2", " ", "2", " ", "2"],
-  ["2", " ", "2", " ", "2", " ", "2", " "],
-  [" ", "2", " ", "2", " ", "2", " ", "2"]]
+  [" ", "2", " ", " ", " ", " ", " ", " "]]
     
     self.board = boardList
-    self.pointsWhite = 0
-    self.pointsBlack = 0
+    self.pointsWhite = 7
+    self.pointsBlack = 9
     
   def display(self):
     #displays board in readable and logical way
@@ -67,7 +68,6 @@ class checkers(object):
     opponent = " "
     opponentInt = " "
     
-    
     if self.board[-pieceR][pieceC] == "♔":
       opponentInt = "1"
       opponent = "Black"
@@ -88,10 +88,9 @@ class checkers(object):
     self.board[-pieceR][pieceC] = " "
     self.display()
     
-    
     if opponent == " " and opponentInt == " ":
       opponent, opponentInt = self.getOpponent(player)
-  
+    
     print "\n PLAYER", opponent.upper(), "MOVE \n"
     
   def negPos(self, player):
@@ -103,6 +102,7 @@ class checkers(object):
     
   def userMove(self, move, piece, player):
     #checks legitimacy of user move according to checkers rules
+    #returns True if move can/was made, false if move cannot be made
     moveR, moveC = self.getMoves(move)
     pieceR, pieceC = self.getPieces(piece)
     
@@ -124,7 +124,6 @@ class checkers(object):
     else:
       self.pointsBlack += 1
       
-      
     self.board[-((moveR+(pieceR)) // 2)][((moveC) + (pieceC))//2] = " "
     self.validMove(move, piece, player)
     
@@ -137,31 +136,33 @@ class checkers(object):
   
   def jump(self, move, piece, player):
     #checks legitimacy of jump (if there is a player to jump, and if the jump follows checkers rules)
-    #allows user to jump again if possible
+    #allows user to jump again if possible, returns False if jump invalid
     
     moveR, moveC = self.getMoves(move)
     pieceR, pieceC = self.getPieces(piece)
   
     opponent, opponentInt = self.exception(pieceR, pieceC)
-    if opponent == " " and opponentInt == " ":
+    if opponent == " " and opponentInt == " ": #selection
       opponent, opponentInt = self.getOpponent(player)
     
-    if (player == "2" and pieceR >= 7) or (player == "1" and pieceR <=2):
+    if (player == "2" and pieceR >= 7) or (player == "1" and pieceR <=2): #selection
       return False
-      
-    elif self.board[-pieceR+self.negPos(player)][pieceC-1] == opponentInt and self.board[-pieceR+self.negPosJump(player)][pieceC-2] == " " or self.board[-pieceR+self.negPos(player)][pieceC+1] == opponentInt and self.board[-pieceR+self.negPosJump(player)][pieceC+2] == " ":
+    
+    #sequencing
+    if (self.board[-pieceR+self.negPos(player)][pieceC-1] == opponentInt and self.board[-pieceR+self.negPosJump(player)][pieceC-2] == " " or
+        self.board[-pieceR+self.negPos(player)][pieceC+1] == opponentInt and self.board[-pieceR+self.negPosJump(player)][pieceC+2] == " "): #selection
       self.jumpFunc(move, piece, player)
     else:
       return False
 
     again = input(style.BOLD +"Would you like to jump again? - only applicable if possible [y/n]"+style.END)
     
-    if again == "y":
+    while again == "y": #iteration
       piece, move = questions()
       value = self.jump(move, piece, player)
+      again = "n"
       
-    elif again == "n":
-      print "\n PLAYER", opponent.upper(), "MOVE \n"
+    #print "\n PLAYER", opponent.upper(), "MOVE \n"
   
   def king(self, move, piece):
     #trusts player is king, makes the move
@@ -170,10 +171,8 @@ class checkers(object):
       value2 = self.userMove(move, piece, "2")
       if value2 == False:
         value3 = self.jump(move, piece, "1")
-        #print "3:", value3
         if value3 == False:
           value4 = self.jump(move, piece, "2")
-          #print "4:", value4
           if value4 == False:
             return False
     return True
@@ -198,10 +197,8 @@ class checkers(object):
     
     if player == "2" and self.board[-pieceR][pieceC] == "♔":
       return self.king(move, piece)
-      #return True
     elif player == "1" and self.board[-pieceR][pieceC] == "♚":
       return self.king(move, piece)
-      #return True
       
     
 def gameIntro():
@@ -218,7 +215,7 @@ def questions():
   return piece, move
  
 def rounds():
-  #dictates rounds + who's turn it is
+  #dictates rounds + who's turn it is, no return value
   numberRound = 1
   
   board = checkers()
@@ -227,7 +224,7 @@ def rounds():
 
   gameIntro()
   
-  while board.pointsWhite < 12 or board.pointsBlack < 12: #while any move can be made
+  while board.pointsWhite < 12 and board.pointsBlack < 12: 
     piece, move = questions()
     
     if numberRound%2 != 0:
@@ -247,14 +244,40 @@ def rounds():
           value = board.king(move, piece)
         else:
           value = board.userMove(move, piece, player)
-    
       
     if move[0] == "8" or move[0] == "1":
       board.convertKing(move, player)
     
-    
-    
     numberRound += 1
   
+  
+  if player == "1":
+    player = "black"
+  elif player == "2":
+    player = "white"
+  
+  print "\n"  
+  print "\n", style.BOLD + player.upper(), "HAS WON THE MATCH" + + style.END
 # M A I N 
 rounds()
+
+####
+# 54 65
+# 
+# 76 54 jump
+# 
+# 54 36 jump
+# 
+# 52 74 jump
+# 
+# 56 45
+# 
+# 74 85
+# 
+# 72 63
+# 
+# 85 67
+# 
+# 
+
+
