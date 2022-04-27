@@ -54,6 +54,13 @@ class checkers(object):
       return "White", "2"
     elif player == "2" or player == "♔":
       return "Black", "1"
+      
+  def getKing(self, player):
+    #identify opponent's king
+    if player == "1" or player == "♚":
+      return "♔"
+    elif player == "2" or player == "♔":
+      return "♚"
   
   def movePossible(self, move, piece, player):
     #checks legitimacy of move - is the desired space open
@@ -151,6 +158,9 @@ class checkers(object):
     #sequencing
     if (self.board[-pieceR+self.negPos(player)][pieceC-1] == opponentInt and self.board[-pieceR+self.negPosJump(player)][pieceC-2] == " " or
         self.board[-pieceR+self.negPos(player)][pieceC+1] == opponentInt and self.board[-pieceR+self.negPosJump(player)][pieceC+2] == " "): #selection
+      self.jumpFunc(move, piece, player)
+    elif (self.board[-pieceR+self.negPos(player)][pieceC-1] == self.getKing(player) and self.board[-pieceR+self.negPosJump(player)][pieceC-2] == " " or
+        self.board[-pieceR+self.negPos(player)][pieceC+1] == self.getKing(player) and self.board[-pieceR+self.negPosJump(player)][pieceC+2] == " "): #selection
       self.jumpFunc(move, piece, player)
     else:
       return False
