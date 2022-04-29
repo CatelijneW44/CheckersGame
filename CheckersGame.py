@@ -12,7 +12,7 @@ class checkers(object):
   def __init__(self):
     # Initialize board (list), points for both players
     boardList = [
-  [" ", " ", "1", " ", " ", " ", " ", " "],
+  [" ", " ", "1", " ", " ", " ", "♔", " "],
   [" ", " ", " ", "1", " ", "1", " ", " "],
   [" ", " ", "2", " ", " ", " ", " ", " "],
   [" ", " ", " ", "2", " ", " ", " ", " "],
@@ -95,10 +95,6 @@ class checkers(object):
     self.board[-pieceR][pieceC] = " "
     self.display()
     
-    if opponent == " " and opponentInt == " ":
-      opponent, opponentInt = self.getOpponent(player)
-    
-    print "\n PLAYER", opponent.upper(), "MOVE \n"
     
   def negPos(self, player):
     #sub-function to shorten userMove()
@@ -145,6 +141,7 @@ class checkers(object):
     #checks legitimacy of jump (if there is a player to jump, and if the jump follows checkers rules)
     #allows user to jump again if possible, returns False if jump invalid
     
+    
     moveR, moveC = self.getMoves(move)
     pieceR, pieceC = self.getPieces(piece)
   
@@ -152,7 +149,7 @@ class checkers(object):
     if opponent == " " and opponentInt == " ": #selection
       opponent, opponentInt = self.getOpponent(player)
     
-    if (player == "2" and pieceR >= 7) or (player == "1" and pieceR <=2): #selection
+    if (player == "2" and pieceR >= 7) and self.board[-pieceR][pieceC] != "♔" or (player == "1" and pieceR <=2) and self.board[-pieceR][pieceC] != "♚":
       return False
     
     #sequencing
@@ -162,6 +159,16 @@ class checkers(object):
     elif (self.board[-pieceR+self.negPos(player)][pieceC-1] == self.getKing(player) and self.board[-pieceR+self.negPosJump(player)][pieceC-2] == " " or
         self.board[-pieceR+self.negPos(player)][pieceC+1] == self.getKing(player) and self.board[-pieceR+self.negPosJump(player)][pieceC+2] == " "): #selection
       self.jumpFunc(move, piece, player)
+    elif self.isKing(move, piece, player) == True:
+      i = "1"
+      for i in range(2):
+        if (self.board[-pieceR+self.negPos(i)][pieceC-1] == opponentInt and self.board[-pieceR+self.negPosJump(i)][pieceC-2] == " " or
+        self.board[-pieceR+self.negPos(i)][pieceC+1] == opponentInt and self.board[-pieceR+self.negPosJump(i)][pieceC+2] == " " or 
+        self.board[-pieceR+self.negPos(i)][pieceC-1] == self.getKing(player) and self.board[-pieceR+self.negPosJump(i)][pieceC-2] == " " or
+        self.board[-pieceR+self.negPos(i)][pieceC+1] == self.getKing(player) and self.board[-pieceR+self.negPosJump(i)][pieceC+2] == " "):
+          self.jumpFunc(move, piece, player)
+        else:
+          i = "2"
     else:
       return False
 
@@ -170,28 +177,20 @@ class checkers(object):
     while again == "y": #iteration
       piece, move = questions()
       value = self.jump(move, piece, player)
-      again = "n"
-      
-    #print "\n PLAYER", opponent.upper(), "MOVE \n"
+      return value
   
-  def king(self, move, piece):
+  def king(self, move, piece, player): #ISSUE WITH HOW IT'S PUTTING IN THE VALUES - MAKES SENSE BUT ANNOYING SMH
     #trusts player is king, makes the move
-    value1 = self.userMove(move, piece, "1")
-    if value1 == False:
-      value2 = self.userMove(move, piece, "2")
-      if value2 == False:
-        value3 = self.jump(move, piece, "1")
-        if value3 == False:
-          value4 = self.jump(move, piece, "2")
-          if value4 == False:
-            return False
-    return True
+    if self.jump(move, piece, player) == False:
+      print "heyheyhey"
+      return False
+    else:
+      return True
   
   def convertKing(self, move, player):
     #convert regular player to king according to checkers rules
     moveR = int(move[0])
     moveC = int(move[1])-1
-    opponent, opponentInt = self.getOpponent(player)
     
     if player == "2" and moveR == 8:
       self.board[-moveR][moveC] = "♔"
@@ -199,16 +198,17 @@ class checkers(object):
     elif player == "1" and moveR == 1:
       self.board[-moveR][moveC] = "♚"
       self.display()
-    print "\n PLAYER", opponent.upper(), "MOVE \n"
     
   def isKing(self, move, piece, player):
     #checks to make sure player is a king
     pieceR, pieceC = self.getPieces(piece)
     
     if player == "2" and self.board[-pieceR][pieceC] == "♔":
-      return self.king(move, piece)
+      return self.king(move, piece, player)
     elif player == "1" and self.board[-pieceR][pieceC] == "♚":
-      return self.king(move, piece)
+      return self.king(move, piece, player)
+    else:
+      return False
       
     
 def gameIntro():
@@ -257,6 +257,10 @@ def rounds():
       
     if move[0] == "8" or move[0] == "1":
       board.convertKing(move, player)
+    
+    print player
+    opponent, opponentInt = board.getOpponent(player)
+    print "\n PLAYER", opponent.upper(), "MOVE \n"
     
     numberRound += 1
   
