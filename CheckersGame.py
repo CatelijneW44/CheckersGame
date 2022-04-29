@@ -151,17 +151,21 @@ class checkers(object):
     
     if (player == "2" and pieceR >= 7) and self.board[-pieceR][pieceC] != "♔" or (player == "1" and pieceR <=2) and self.board[-pieceR][pieceC] != "♚":
       return False
+  
     
     #sequencing
-    if (self.board[-pieceR+self.negPos(player)][pieceC-1] == opponentInt and self.board[-pieceR+self.negPosJump(player)][pieceC-2] == " " or
-        self.board[-pieceR+self.negPos(player)][pieceC+1] == opponentInt and self.board[-pieceR+self.negPosJump(player)][pieceC+2] == " "): #selection
-      self.jumpFunc(move, piece, player)
-    elif (self.board[-pieceR+self.negPos(player)][pieceC-1] == self.getKing(player) and self.board[-pieceR+self.negPosJump(player)][pieceC-2] == " " or
-        self.board[-pieceR+self.negPos(player)][pieceC+1] == self.getKing(player) and self.board[-pieceR+self.negPosJump(player)][pieceC+2] == " "): #selection
-      self.jumpFunc(move, piece, player)
-    elif self.isKing(move, piece, player) == True:
+    if self.board[-pieceR][pieceC] == player:
+      if (self.board[-pieceR+self.negPos(player)][pieceC-1] == opponentInt and self.board[-pieceR+self.negPosJump(player)][pieceC-2] == " " or
+          self.board[-pieceR+self.negPos(player)][pieceC+1] == opponentInt and self.board[-pieceR+self.negPosJump(player)][pieceC+2] == " "): #selection
+        self.jumpFunc(move, piece, player)
+        
+    elif self.board[-pieceR][pieceC] == player:
+      if (self.board[-pieceR+self.negPos(player)][pieceC-1] == self.getKing(player) and self.board[-pieceR+self.negPosJump(player)][pieceC-2] == " " or
+          self.board[-pieceR+self.negPos(player)][pieceC+1] == self.getKing(player) and self.board[-pieceR+self.negPosJump(player)][pieceC+2] == " "): #selection
+        self.jumpFunc(move, piece, player)
+    elif self.board[-pieceR][pieceC] == "♔" or self.board[-pieceR][pieceC] == "♚":
       i = "1"
-      for i in range(2):
+      for c in range(2):
         if (self.board[-pieceR+self.negPos(i)][pieceC-1] == opponentInt and self.board[-pieceR+self.negPosJump(i)][pieceC-2] == " " or
         self.board[-pieceR+self.negPos(i)][pieceC+1] == opponentInt and self.board[-pieceR+self.negPosJump(i)][pieceC+2] == " " or 
         self.board[-pieceR+self.negPos(i)][pieceC-1] == self.getKing(player) and self.board[-pieceR+self.negPosJump(i)][pieceC-2] == " " or
@@ -258,7 +262,7 @@ def rounds():
     if move[0] == "8" or move[0] == "1":
       board.convertKing(move, player)
     
-    print player
+    
     opponent, opponentInt = board.getOpponent(player)
     print "\n PLAYER", opponent.upper(), "MOVE \n"
     
