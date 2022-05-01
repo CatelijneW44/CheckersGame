@@ -1,4 +1,4 @@
-#move = row, column
+\#move = row, column
 
 ### USE lATER
 
@@ -102,7 +102,28 @@ class checkers(object):
       return -1
     elif player == "1":
       return 1
-    
+
+  def checkRangeR(self, piece):
+    if piece >= -8 and piece <= -1:
+      return True
+    else
+      return False
+
+  def checkRangeC(self, piece):
+    if piece >= 0 and piece <= 7:
+      return True
+    else
+      return False
+
+  def kingJump(self, move, piece, opponentInt, pieceR, pieceC, player):
+    for i in range(-1, 2, 2):
+      for j in range(-1, 2, 2):
+        if (self.checkRangeR(-pieceR+i) and self.checkRangeC(pieceC+j) and self.board[-pieceR+i][pieceC+j] == opponentInt and
+            self.checkRangeR(-pieceR+2*i) and self.checkRangeC(pieceC+2*j) and self.board[-pieceR+2*i][pieceC+2*j] == " "):
+          self.jumpFunc(move, piece, player)
+          return True
+    return False
+
   def userMove(self, move, piece, player):
     #checks legitimacy of user move according to checkers rules
     #returns True if move can/was made, false if move cannot be made
@@ -158,21 +179,13 @@ class checkers(object):
       if (self.board[-pieceR+self.negPos(player)][pieceC-1] == opponentInt and self.board[-pieceR+self.negPosJump(player)][pieceC-2] == " " or
           self.board[-pieceR+self.negPos(player)][pieceC+1] == opponentInt and self.board[-pieceR+self.negPosJump(player)][pieceC+2] == " "): #selection
         self.jumpFunc(move, piece, player)
-        
-    elif self.board[-pieceR][pieceC] == player:
-      if (self.board[-pieceR+self.negPos(player)][pieceC-1] == self.getKing(player) and self.board[-pieceR+self.negPosJump(player)][pieceC-2] == " " or
+      elif (self.board[-pieceR+self.negPos(player)][pieceC-1] == self.getKing(player) and self.board[-pieceR+self.negPosJump(player)][pieceC-2] == " " or
           self.board[-pieceR+self.negPos(player)][pieceC+1] == self.getKing(player) and self.board[-pieceR+self.negPosJump(player)][pieceC+2] == " "): #selection
         self.jumpFunc(move, piece, player)
-    elif self.board[-pieceR][pieceC] == "♔" or self.board[-pieceR][pieceC] == "♚":
-      i = "1"
-      for c in range(2):
-        if (self.board[-pieceR+self.negPos(i)][pieceC-1] == opponentInt and self.board[-pieceR+self.negPosJump(i)][pieceC-2] == " " or
-        self.board[-pieceR+self.negPos(i)][pieceC+1] == opponentInt and self.board[-pieceR+self.negPosJump(i)][pieceC+2] == " " or 
-        self.board[-pieceR+self.negPos(i)][pieceC-1] == self.getKing(player) and self.board[-pieceR+self.negPosJump(i)][pieceC-2] == " " or
-        self.board[-pieceR+self.negPos(i)][pieceC+1] == self.getKing(player) and self.board[-pieceR+self.negPosJump(i)][pieceC+2] == " "):
-          self.jumpFunc(move, piece, player)
-        else:
-          i = "2"
+    elif self.board[-pieceR][pieceC] == "♔":
+      self.kingJump(move, piece, opponentInt, pieceR, pieceC, player)
+    elif self.board[-pieceR][pieceC] == "♚":
+      self.kingJump(move, piece, opponentInt, pieceR, pieceC, player)
     else:
       return False
 
