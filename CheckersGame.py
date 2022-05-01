@@ -12,18 +12,18 @@ class checkers(object):
   def __init__(self):
     # Initialize board (list), points for both players
     boardList = [
-  [" ", " ", "1", " ", " ", " ", "♔", " "],
+  [" ", " ", "1", " ", " ", " ", " ", " "],
   [" ", " ", " ", "1", " ", "1", " ", " "],
   [" ", " ", "2", " ", " ", " ", " ", " "],
   [" ", " ", " ", "2", " ", " ", " ", " "],
   [" ", " ", " ", " ", "2", " ", " ", " "],
   [" ", " ", " ", " ", " ", " ", " ", " "],
-  [" ", " ", " ", " ", " ", " ", " ", " "],
-  [" ", "2", " ", " ", " ", " ", " ", " "]]
+  [" ", " ", " ", " ", " ", "2", " ", " "],
+  [" ", "2", " ", " ", "♚", " ", " ", " "]]
     
     self.board = boardList
-    self.pointsWhite = 7
-    self.pointsBlack = 8
+    self.pointsWhite = 8
+    self.pointsBlack = 9
     
   def display(self):
     #displays board in readable and logical way
@@ -185,9 +185,9 @@ class checkers(object):
   
   def king(self, move, piece, player): #ISSUE WITH HOW IT'S PUTTING IN THE VALUES - MAKES SENSE BUT ANNOYING SMH
     #trusts player is king, makes the move
-    if self.jump(move, piece, player) == False:
-      print "heyheyhey"
-      return False
+    if self.userMove(move, piece, player) == False:
+      if self.jump(move, piece, player) == False:
+        return False
     else:
       return True
   
