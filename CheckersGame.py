@@ -1,9 +1,7 @@
 #move = row, column
 
-### USE lATER
-
-class style: #https://stackoverflow.com/questions/24834876/how-can-i-make-text-bold-in-python
-  #Using this bc _____
+class style:
+  #Took this from https://stackoverflow.com/questions/24834876/how-can-i-make-text-bold-in-python
    BOLD = '\033[1m'
    END = '\033[0m'
 
@@ -184,7 +182,6 @@ class checkers(object):
     #checks legitimacy of jump (if there is a player to jump, and if the jump follows checkers rules)
     #allows user to jump again if possible, returns False if jump invalid
     
-    
     moveR, moveC = self.getMoves(move)
     pieceR, pieceC = self.getPieces(piece)
   
@@ -195,14 +192,13 @@ class checkers(object):
     if (player == "2" and pieceR >= 7) and self.board[-pieceR][pieceC] != "♔" or (player == "1" and pieceR <=2) and self.board[-pieceR][pieceC] != "♚":
       return False
   
-    
     #sequencing
     if self.board[-pieceR][pieceC] == player:
       if (self.board[-pieceR+self.negPos(player)][pieceC-1] == opponentInt and self.board[-pieceR+self.negPosJump(player)][pieceC-2] == " " or
           self.board[-pieceR+self.negPos(player)][pieceC+1] == opponentInt and self.board[-pieceR+self.negPosJump(player)][pieceC+2] == " "): #selection
         self.jumpFunc(move, piece, player)
       elif (self.board[-pieceR+self.negPos(player)][pieceC-1] == self.getKing(player) and self.board[-pieceR+self.negPosJump(player)][pieceC-2] == " " or
-          self.board[-pieceR+self.negPos(player)][pieceC+1] == self.getKing(player) and self.board[-pieceR+self.negPosJump(player)][pieceC+2] == " "): #selection
+          self.board[-pieceR+self.negPos(player)][pieceC+1] == self.getKing(player) and self.board[-pieceR+self.negPosJump(player)][pieceC+2] == " "):
         self.jumpFunc(move, piece, player)
     elif self.board[-pieceR][pieceC] == "♔":
       if self.kingJump(move, moveR, moveC, piece, opponentInt, pieceR, pieceC, player, "♚") == False:
@@ -220,7 +216,7 @@ class checkers(object):
       value = self.jump(move, piece, player)
       return value
   
-  def king(self, move, piece, player): #ISSUE WITH HOW IT'S PUTTING IN THE VALUES - MAKES SENSE BUT ANNOYING SMH
+  def king(self, move, piece, player): 
     #trusts player is king, makes the move
     if self.userMove(move, piece, player) == False:
       if self.jump(move, piece, player) == False:
@@ -251,7 +247,6 @@ class checkers(object):
     else:
       return False
       
-    
 def gameIntro():
   #use -> shorten main code
   print style.BOLD +"\n C H E C K E R S   G A M E \n"
@@ -315,31 +310,3 @@ def rounds():
   print "\n", style.BOLD + player.upper(), "HAS WON THE MATCH" + style.END, "\n"
 # M A I N 
 rounds()
-
-####
-# 54 65
-# 
-# 76 54 jump
-# 
-# 54 36 jump
-# 
-# 63 85 jump
-# 
-# 83 74
-# 
-# 85 63
-# 
-# 36 25
-# 
-# 12 21
-# 
-# 25 14
-# 
-# 21 32
-# 
-# 14 23
-# 
-# 63 52
-# 
-
-# 
