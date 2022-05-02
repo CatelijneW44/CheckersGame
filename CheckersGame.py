@@ -1,4 +1,4 @@
-\#move = row, column
+#move = row, column
 
 ### USE lATER
 
@@ -18,12 +18,12 @@ class checkers(object):
   [" ", " ", " ", "2", " ", " ", " ", " "],
   [" ", " ", " ", " ", "2", " ", " ", " "],
   [" ", " ", " ", " ", " ", " ", " ", " "],
-  [" ", " ", " ", " ", " ", "2", " ", " "],
-  [" ", "2", " ", " ", "♚", " ", " ", " "]]
+  [" ", " ", " ", " ", " ", " ", " ", " "],
+  [" ", "2", " ", " ", " ", " ", " ", " "]]
     
     self.board = boardList
-    self.pointsWhite = 8
-    self.pointsBlack = 9
+    self.pointsWhite = 9
+    self.pointsBlack = 8
     
   def display(self):
     #displays board in readable and logical way
@@ -106,22 +106,37 @@ class checkers(object):
   def checkRangeR(self, piece):
     if piece >= -8 and piece <= -1:
       return True
-    else
+    else:
       return False
 
   def checkRangeC(self, piece):
     if piece >= 0 and piece <= 7:
       return True
-    else
+    else:
       return False
 
-  def kingJump(self, move, piece, opponentInt, pieceR, pieceC, player):
+  def checkJump(self, move, moveR, moveC, piece, pieceR, pieceC, player, opponent):
     for i in range(-1, 2, 2):
       for j in range(-1, 2, 2):
-        if (self.checkRangeR(-pieceR+i) and self.checkRangeC(pieceC+j) and self.board[-pieceR+i][pieceC+j] == opponentInt and
-            self.checkRangeR(-pieceR+2*i) and self.checkRangeC(pieceC+2*j) and self.board[-pieceR+2*i][pieceC+2*j] == " "):
+        if (self.checkRangeR(-pieceR+i) and self.checkRangeC(pieceC+j) and self.board[-pieceR+i][pieceC+j] == opponent and
+            self.checkRangeR(-pieceR+2*i) and self.checkRangeC(pieceC+2*j) and self.board[-pieceR+2*i][pieceC+2*j] == " " and 
+            -pieceR+2*i == -moveR and pieceC+2*j == moveC):
           self.jumpFunc(move, piece, player)
           return True
+    else:
+      return False
+  
+  def kingJump(self, move, moveR, moveC, piece, opponentInt, pieceR, pieceC, player, king):
+    if self.checkJump(move, moveR, moveC, piece, pieceR, pieceC, player, opponentInt) 
+    return False
+    
+  def kingMove(self, move, moveR, moveC, piece, pieceR, pieceC, player):
+    for i in range(-1, 2, 2):
+        for j in range(-1, 2, 2):
+          if (self.checkRangeR(-pieceR+i) and self.checkRangeC(pieceC+j) and self.board[-pieceR+i][pieceC+j] == " " and
+              -pieceR+i == -moveR and pieceC+j == moveC):
+            self.validMove(move, piece, player)
+            return True
     return False
 
   def userMove(self, move, piece, player):
@@ -134,7 +149,12 @@ class checkers(object):
       if self.movePossible(move, piece, player) == True:
         self.validMove(move, piece, player)
         return True
-        
+    elif self.board[-pieceR][pieceC] == "♔":
+      if self.kingMove(move, moveR, moveC, piece, pieceR, pieceC, player) == False:
+        return False
+    elif self.board[-pieceR][pieceC] == "♚":
+      if self.kingMove(move, moveR, moveC, piece, pieceR, pieceC, player) == False:
+        return False
     else:
       return False
   
@@ -183,9 +203,11 @@ class checkers(object):
           self.board[-pieceR+self.negPos(player)][pieceC+1] == self.getKing(player) and self.board[-pieceR+self.negPosJump(player)][pieceC+2] == " "): #selection
         self.jumpFunc(move, piece, player)
     elif self.board[-pieceR][pieceC] == "♔":
-      self.kingJump(move, piece, opponentInt, pieceR, pieceC, player)
+      if self.kingJump(move, moveR, moveC, piece, opponentInt, pieceR, pieceC, player) == False:
+        return False
     elif self.board[-pieceR][pieceC] == "♚":
-      self.kingJump(move, piece, opponentInt, pieceR, pieceC, player)
+      if self.kingJump(move, moveR, moveC, piece, opponentInt, pieceR, pieceC, player) == False:
+        return False
     else:
       return False
 
@@ -268,7 +290,7 @@ def rounds():
         print "\n I N V A L I D  M O V E \n"
         piece, move = questions()
         if valueKing == False:
-          value = board.king(move, piece)
+          value = board.king(move, piece, player)
         else:
           value = board.userMove(move, piece, player)
       
