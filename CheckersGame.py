@@ -127,7 +127,9 @@ class checkers(object):
       return False
   
   def kingJump(self, move, moveR, moveC, piece, opponentInt, pieceR, pieceC, player, king):
-    if self.checkJump(move, moveR, moveC, piece, pieceR, pieceC, player, opponentInt) 
+    if (self.checkJump(move, moveR, moveC, piece, pieceR, pieceC, player, opponentInt) or 
+        self.checkJump(move, moveR, moveC, piece, pieceR, pieceC, player, king)):
+          return True
     return False
     
   def kingMove(self, move, moveR, moveC, piece, pieceR, pieceC, player):
@@ -203,10 +205,10 @@ class checkers(object):
           self.board[-pieceR+self.negPos(player)][pieceC+1] == self.getKing(player) and self.board[-pieceR+self.negPosJump(player)][pieceC+2] == " "): #selection
         self.jumpFunc(move, piece, player)
     elif self.board[-pieceR][pieceC] == "♔":
-      if self.kingJump(move, moveR, moveC, piece, opponentInt, pieceR, pieceC, player) == False:
+      if self.kingJump(move, moveR, moveC, piece, opponentInt, pieceR, pieceC, player, "♚") == False:
         return False
     elif self.board[-pieceR][pieceC] == "♚":
-      if self.kingJump(move, moveR, moveC, piece, opponentInt, pieceR, pieceC, player) == False:
+      if self.kingJump(move, moveR, moveC, piece, opponentInt, pieceR, pieceC, player, "♔") == False:
         return False
     else:
       return False
